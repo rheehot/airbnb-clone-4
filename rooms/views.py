@@ -3,18 +3,23 @@ from django.shortcuts import render
 from django_countries import countries
 from . import models
 
+
 # Create your views here.
 class HomeView(ListView):
     """ Homeview Definition """
+
     model = models.Room
     paginate_by = 10
     paginate_orphans = 5
     ordering = "created"
     context_object_name = "rooms"
 
+
 class RoomView(DetailView):
-    """ RoomView Definition """ 
+    """ RoomView Definition """
+
     model = models.Room
+
 
 def search(request):
     city = request.GET.get("city", "Anywhere")
@@ -30,7 +35,6 @@ def search(request):
     super_host = request.GET.get("super_host", False)
     s_amenities = request.GET.getlist("amenities")
     s_facilities = request.GET.getlist("facilities")
-    
 
     form = {
         "city": city,
@@ -54,9 +58,18 @@ def search(request):
         "room_types": room_types,
         "amenities": amenities,
         "facilities": facilities,
-    } #from db
+    }  # from db
 
-    return render(
-        request, 
-        "rooms/search.html", {**form, **choices}
-    )
+    filter_args = {}
+
+    if city != "Anywhere":
+        filter_args["city__startswith"] = city
+
+    filter_args["country"] = country
+
+    if room_type != 0:
+        filter_args["room_type__pk"] = room_type
+
+    rooms = models.Room.objects.filter(**filter_args)
+
+    return render(request, "rooms/search.html", {**form, **choices, "rooms": rooms})

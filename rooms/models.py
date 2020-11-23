@@ -6,10 +6,12 @@ from django.urls import reverse
 
 class AbstractItem(core_models.TimeStampedModel):
     """ Abstract Item """
+
     name = models.CharField(max_length=80)
-    
+
     class Meta:
         abstract = True
+
     def __str__(self):
         return self.name
 
@@ -17,6 +19,7 @@ class AbstractItem(core_models.TimeStampedModel):
 class RoomType(AbstractItem):
 
     """ RoomType Model Definition """
+
     class Meta:
         verbose_name = "Room Type"
 
@@ -28,28 +31,34 @@ class Amenity(AbstractItem):
 
     class Meta:
         verbose_name_plural = "Amenities"
+
     pass
 
 
 class Facility(AbstractItem):
     """ Facility Model Definition """
+
     class Meta:
         verbose_name_plural = "Facilities"
+
     pass
 
 
 class HouseRule(AbstractItem):
     """ HouseRule Model Definition """
+
     class Meta:
         verbose_name = "House Rule"
+
     pass
 
 
 class Photo(core_models.TimeStampedModel):
     """Photo Model Definition """
+
     caption = models.CharField(max_length=80)
     file = models.ImageField(upload_to="room_photos")
-    room = models.ForeignKey("Room", related_name="photos" , on_delete=models.CASCADE)
+    room = models.ForeignKey("Room", related_name="photos", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.caption
@@ -71,8 +80,12 @@ class Room(core_models.TimeStampedModel):
     check_in = models.TimeField()
     check_out = models.TimeField()
     instant_book = models.BooleanField(default=False)
-    host = models.ForeignKey("users.User", related_name="rooms", on_delete=models.CASCADE)
-    room_type = models.ForeignKey("RoomType", related_name="rooms", on_delete=models.SET_NULL, null=True)
+    host = models.ForeignKey(
+        "users.User", related_name="rooms", on_delete=models.CASCADE
+    )
+    room_type = models.ForeignKey(
+        "RoomType", related_name="rooms", on_delete=models.SET_NULL, null=True
+    )
     amenities = models.ManyToManyField("Amenity", related_name="rooms", blank=True)
     facilities = models.ManyToManyField("Facility", related_name="rooms", blank=True)
     house_rules = models.ManyToManyField("HouseRule", related_name="rooms", blank=True)
@@ -86,8 +99,6 @@ class Room(core_models.TimeStampedModel):
 
     def get_absolute_url(self):
         return reverse("rooms:detail", kwargs={"pk": self.pk})
-    
-
 
     def total_rating(self):
         all_reviews = self.reviews.all()
