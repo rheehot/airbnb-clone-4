@@ -82,12 +82,17 @@ class SearchView(View):
                 )
                 paginator = Paginator(queryset, 10, orphans=5)
                 page = request.GET.get("page", 1)
+
                 rooms = paginator.get_page(page)
 
                 return render(
-                    request, "rooms/search.html", {"form": form, "rooms": rooms}
+                    request,
+                    "rooms/search.html",
+                    {"form": form, "rooms": rooms},
                 )
 
         else:
+
             form = forms.SearchForm()
+
         return render(request, "rooms/search.html", {"form": form})

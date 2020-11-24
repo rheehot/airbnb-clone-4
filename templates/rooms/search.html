@@ -22,4 +22,17 @@ Search
     <h3>{{room.name}}</h3>
 {% endfor %}
 
+<h5>
+    {% if page > 0 %}
+        <a href="?page={{page |add:-1}}">Previous</a>
+    {% endif %}
+
+    Page {{page}} of {{num_page}}
+
+    {% if page < num_page %}
+        <a href="?page={{page |add:1}}">Next</a>
+    {% endif %}
+</h5>
+
+
 {% endblock content %}
