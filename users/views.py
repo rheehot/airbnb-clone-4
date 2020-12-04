@@ -41,4 +41,5 @@ class SignUpView(FormView):
         print(dir(user))
         if user is not None:
             login(self.request, user)
+        user.verify_email()
         return super().form_valid(form)
